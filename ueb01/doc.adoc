@@ -1,0 +1,80 @@
+= Übung 01
+:author: Florian Weingartshofer
+:email: <S1910307103@students.fh-hagenberg.at>
+:reproducible:
+:listing-caption: Listing
+:source-highlighter: rouge
+:source-dir: ./src
+:stem:
+
+== Aufgabe 01
+
+.Graph
+["graphviz", "1.png"]
+----
+digraph {
+    edge [dir=none]
+    a -> b
+    a -> d
+    c -> e
+    b -> c
+    e -> d
+}
+----
+
+== Aufgabe 02
+=== a)
+1. `W=(1,2,3,4,2,5,7,8)`
+2. `W=(1,2,3,4,2,5,6,8)`
+3. `W=(1,2,4,3,2,5,7,8)`
+4. `W=(1,2,4,3,2,5,6,8)`
+5. `W=(1,2,5,7,8)`
+6. `W=(1,2,5,6,8)`
+7. `W=(1,6,8)`
+8. `W=(1,6,5,7,8)`
+
+=== b)
+* latexmath:[$W_1=(1,2,3,4,5,6,8)$] Weder noch
+* latexmath:[$W_2=(5,7,8)$] Pfad
+* latexmath:[$W_3=(2,3,4,2,5)$] Weg
+* latexmath:[$W_4=(1,2,3,2,5,2,1)$] Wanderung
+* latexmath:[$W_5=(3,4,2,3)$] Weg od. Zyklus
+* latexmath:[$W_6=\{1,2,3,4\}$] ist eine Menge, falls es ein Tupel sein sollte ist es ein Pfad
+
+== Aufgabe 03
+* latexmath:[$H_1$]
+Ist ein Teilgraph:
+latexmath:[$(\{a,b,d\}\subseteq\{a,b,c,d,e\})\land
+(\{\{a,b\},\{a,d\}\}\subseteq\{\{a,b\}\,\{a,d\},\{c,e\},\{b,c\},\{e,d\}\})$]
+
+* latexmath:[$H_2$]
+Ist ein Teilgraph:
+latexmath:[$(\{a,b,c,d,e\}\subseteq\{a,b,c,d,e\})\land
+(\{\{a,b\},\{a,d\},\{b,c\},\{d,e\}\}\subseteq\{\{a,b\}\,\{a,d\},\{c,e\},\{b,c\},\{e,d\}\})$]
+
+* latexmath:[$H_3$]
+Ist kein Teilgraph:
+latexmath:[$(\{a,b,f\}\nsubseteq\{a,b,c,d,e\})\land
+(\{\{a,b\}\}\subseteq\{\{a,b\}\,\{a,d\},\{c,e\},\{b,c\},\{e,d\}\})$]
+
+* latexmath:[$H_4$]
+Ist ein Teilgraph:
+latexmath:[$(\{d,e\}\subseteq\{a,b,c,d,e\})\land
+(\emptyset\subseteq\{\{a,b\}\,\{a,d\},\{c,e\},\{b,c\},\{e,d\}\})$]
+
+<<<
+== Aufgabe 04
+
+[plantuml]
+----
+start
+while (a < b)
+    if ( a % c == 0) equals (true) then
+        break
+    endif
+    ->false;
+    :a++;
+endwhile
+:println(a);
+end
+----

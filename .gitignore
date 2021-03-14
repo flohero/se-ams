@@ -1,5 +1,6 @@
 *.pdf
 *.png
+.asciidoctor
 # Created by https://www.toptal.com/developers/gitignore/api/intellij+all,jupyternotebooks,venv,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij+all,jupyternotebooks,venv,linux
 
