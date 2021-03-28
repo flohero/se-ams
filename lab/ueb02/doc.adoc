@@ -1,0 +1,253 @@
+= Übung 02
+:author: Florian Weingartshofer
+:email: <S1910307103@students.fh-hagenberg.at>
+:reproducible:
+:experimental:
+:listing-caption: Listing
+:source-highlighter: rouge
+:imgdir: ./img
+:imagesoutdir: ./out
+:stem:
+:toc:
+
+== Teilgraphen
+
+.Finde knoteninduzierter Teilgraph
+["graphviz","1"]
+----
+digraph {
+    layout=circo
+    edge [dir=none]
+    1 -> 2
+    2 -> 3
+    3 -> 1
+}
+----
+
+* latexmath:[$G_1 = \{V=\{1\},E=\emptyset\}$]
+* latexmath:[$G_2 = \{V=\{2\},E=\emptyset\}$]
+* latexmath:[$G_3 = \{V=\{3\},E=\emptyset\}$]
+* latexmath:[$G_4 = \{V=\{1,2\},E=\{\{1,2\}\}\}$]
+* latexmath:[$G_5 = \{V=\{2,3\},E=\{\{2,3\}\}\}$]
+* latexmath:[$G_6 = \{V=\{1,3\},E=\{\{1,3\}\}\}$]
+* latexmath:[$G_7 = \{V=\{1,2,3\},E=\{\{1,2\},\{2,3\},\{1,3\}\}\}\}$]
+
+== Eulerkreis
+
+.Start Graph
+["graphviz","2"]
+----
+digraph {
+    edge [dir=none]
+    0 -> 1
+    0 -> 7
+
+    1 -> 2
+    1 -> 3
+    1 -> 4
+
+    2 -> 4
+
+    3 -> 4
+    3 -> 5
+    3 -> 7
+
+    4 -> 5
+
+    5 -> 6
+    5 -> 9
+    5 -> 8
+    5 -> 7
+
+    6 -> 9
+
+    7 -> 8
+}
+----
+
+.Ablauf
+[source,python]
+----
+v=6; F=[(0, 1), (0, 7), (1, 2), (1, 3), (1, 4), (7, 3), (7, 5), (7, 8), (2, 4), (3, 4), (3, 5), (4, 5), (5, 6), (5, 9), (5, 8), (6, 9)]; e=(6, 5); K=[(6, 5), (6, 9)]
+v=5; F=[(0, 1), (0, 7), (1, 2), (1, 3), (1, 4), (7, 3), (7, 5), (7, 8), (2, 4), (3, 4), (3, 5), (4, 5), (5, 9), (5, 8), (6, 9)]; e=(5, 7); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7)]
+v=7; F=[(0, 1), (0, 7), (1, 2), (1, 3), (1, 4), (7, 3), (7, 8), (2, 4), (3, 4), (3, 5), (4, 5), (5, 9), (5, 8), (6, 9)]; e=(7, 3); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8)]
+v=3; F=[(0, 1), (0, 7), (1, 2), (1, 3), (1, 4), (7, 8), (2, 4), (3, 4), (3, 5), (4, 5), (5, 9), (5, 8), (6, 9)]; e=(3, 5); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4)]
+v=5; F=[(0, 1), (0, 7), (1, 2), (1, 3), (1, 4), (7, 8), (2, 4), (3, 4), (4, 5), (5, 9), (5, 8), (6, 9)]; e=(5, 8); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4)]
+v=8; F=[(0, 1), (0, 7), (1, 2), (1, 3), (1, 4), (7, 8), (2, 4), (3, 4), (4, 5), (5, 9), (6, 9)]; e=(8, 7); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4)]
+v=7; F=[(0, 1), (0, 7), (1, 2), (1, 3), (1, 4), (2, 4), (3, 4), (4, 5), (5, 9), (6, 9)]; e=(7, 0); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4)]
+v=0; F=[(0, 1), (1, 2), (1, 3), (1, 4), (2, 4), (3, 4), (4, 5), (5, 9), (6, 9)]; e=(0, 1); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4), (0, 1)]
+v=1; F=[(1, 2), (1, 3), (1, 4), (2, 4), (3, 4), (4, 5), (5, 9), (6, 9)]; e=(1, 4); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4), (0, 1), (1, 2), (1, 4)]
+v=4; F=[(1, 2), (1, 3), (2, 4), (3, 4), (4, 5), (5, 9), (6, 9)]; e=(4, 2); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4), (0, 1), (1, 2), (1, 4), (4, 2)]
+v=2; F=[(1, 2), (1, 3), (3, 4), (4, 5), (5, 9), (6, 9)]; e=(2, 1); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4), (0, 1), (1, 2), (1, 4), (4, 2)]
+v=1; F=[(1, 3), (3, 4), (4, 5), (5, 9), (6, 9)]; e=(1, 3); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4), (0, 1), (1, 2), (1, 4), (4, 2)]
+v=3; F=[(3, 4), (4, 5), (5, 9), (6, 9)]; e=(3, 4); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4), (0, 1), (1, 2), (1, 4), (4, 2)]
+v=4; F=[(4, 5), (5, 9), (6, 9)]; e=(4, 5); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4), (0, 1), (1, 2), (1, 4), (4, 2)]
+v=5; F=[(5, 9), (6, 9)]; e=(5, 9); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4), (0, 1), (1, 2), (1, 4), (4, 2)]
+v=9; F=[(6, 9)]; e=(9, 6); K=[(6, 5), (6, 9), (5, 3), (5, 4), (5, 9), (5, 8), (5, 7), (7, 0), (7, 3), (7, 8), (3, 1), (3, 4), (0, 1), (1, 2), (1, 4), (4, 2)]
+----
+
+.Eulerian Circuit
+[source,python]
+----
+import random
+import networkx as nx
+
+def eulerian_circuit(G: nx.Graph):
+    F = list(G.edges())
+    v = random.choice(list(G.nodes()))
+    K = list(G.edges(v))
+    e = random.choice(K)
+
+    while len(F) > 0:
+        (left, right) = e
+        print(
+            'v=' + str(v),
+            'F=' + str(F),
+            'e=' + str((left, right)),
+            'K=' + str(K),
+            sep='; '
+          )
+
+        # Remove Edge from Graph
+        G.remove_edge(left, right)
+
+        F = list(G.edges())
+
+        # go to next node
+        v = right
+
+        # Add edges from v
+        local_edges = list(G.edges(v))
+        for (first, second) in local_edges:
+            if not (first,second) in K and not (second, first) in K:
+                K.append((first, second))
+
+        # Choose random edge, which is not a bridge
+        # If there is only one edge, we don't care if its a bridge
+        if len(local_edges) == 1:
+            e = local_edges[0]
+        elif len(local_edges) == 0:
+            continue
+        else:
+            # Choose an edge, which is not a bridge
+            e = random.choice(local_edges)
+            while e in list(nx.bridges(G)):
+                e = random.choice(local_edges)
+    return K
+----
+
+== Euler und Hamilton
+
+.Kein Euler oder Hamilton Kreis
+["graphviz","3"]
+----
+digraph {
+    edge [dir=none]
+    a -> b
+    b -> c
+}
+----
+
+.ein Euler Kreis, kein Hamilton Kreis
+["graphviz","4"]
+----
+digraph {
+    edge [dir=none]
+    A -> B
+    B -> C
+    C -> A
+
+    A -> D
+    D -> E
+    E -> A
+}
+----
+
+.Hamilton Kreis, kein Euler Kreis
+["graphviz","5"]
+----
+digraph {
+    edge [dir=none]
+    A -> B
+    A -> D
+    A -> C
+    B -> D
+    B -> C
+    C -> D
+}
+----
+
+.Euler Kreis, Hamilton Kreis
+["graphviz","6"]
+----
+digraph {
+    layout=circo
+    edge [dir=none]
+    1 -> 2
+    1 -> 3
+    1 -> 4
+    2 -> 3
+    2 -> 4
+    3 -> 4
+    3 -> 5
+    4 -> 5
+}
+----
+
+== Reguläre Graphen
+=== a
+["graphviz","7"]
+----
+digraph {
+    edge [dir=none]
+    rankdir=LR
+    l1 -> r1
+    l1 -> r2
+    l1 -> r3
+    l1 -> r4
+
+    l2 -> r1
+    l2 -> r2
+    l2 -> r3
+    l2 -> r4
+
+    l3 -> r1
+    l3 -> r2
+    l3 -> r3
+    l3 -> r4
+
+    l4 -> r1
+    l4 -> r2
+    l4 -> r3
+    l4 -> r4
+}
+----
+
+=== b
+latexmath:[$G=(V, E)$] ist 4-regulär.
+
+- latexmath:[$Ordnung(G)=5$]
+- latexmath:[$||G||=10$]
+
+.4-regulärer Graph mit mind. Kantenanzahl
+["graphviz","8"]
+----
+digraph {
+    edge [dir=none]
+    layout=circo
+
+    a -> b
+    a -> c
+    a -> d
+    a -> e
+
+    b -> c
+    b -> d
+    b -> e
+
+    c -> d
+    c -> e
+
+    d -> e
+}
+----

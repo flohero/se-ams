@@ -5,6 +5,7 @@
 :listing-caption: Listing
 :source-highlighter: rouge
 :source-dir: ./src
+:imagesoutdir: ./out
 :stem:
 
 == Aufgabe 01
