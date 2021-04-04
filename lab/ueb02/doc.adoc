@@ -11,6 +11,8 @@
 :toc:
 :numbered:
 
+<<<
+
 == Teilgraphen
 
 .Finde knoteninduzierter Teilgraph
