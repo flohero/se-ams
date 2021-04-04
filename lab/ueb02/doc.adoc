@@ -9,11 +9,12 @@
 :imagesoutdir: ./out
 :stem:
 :toc:
+:numbered:
 
 == Teilgraphen
 
 .Finde knoteninduzierter Teilgraph
-["graphviz","1"]
+["graphviz"]
 ----
 digraph {
     layout=circo
@@ -35,7 +36,7 @@ digraph {
 == Eulerkreis
 
 .Start Graph
-["graphviz","2"]
+["graphviz"]
 ----
 digraph {
     edge [dir=none]
@@ -139,7 +140,7 @@ def eulerian_circuit(G: nx.Graph):
 == Euler und Hamilton
 
 .Kein Euler oder Hamilton Kreis
-["graphviz","3"]
+["graphviz"]
 ----
 digraph {
     edge [dir=none]
@@ -149,7 +150,7 @@ digraph {
 ----
 
 .ein Euler Kreis, kein Hamilton Kreis
-["graphviz","4"]
+["graphviz"]
 ----
 digraph {
     edge [dir=none]
@@ -164,7 +165,7 @@ digraph {
 ----
 
 .Hamilton Kreis, kein Euler Kreis
-["graphviz","5"]
+["graphviz"]
 ----
 digraph {
     edge [dir=none]
@@ -178,7 +179,7 @@ digraph {
 ----
 
 .Euler Kreis, Hamilton Kreis
-["graphviz","6"]
+["graphviz"]
 ----
 digraph {
     layout=circo
@@ -196,7 +197,7 @@ digraph {
 
 == Reguläre Graphen
 === a
-["graphviz","7"]
+["graphviz"]
 ----
 digraph {
     edge [dir=none]
@@ -230,7 +231,7 @@ latexmath:[$G=(V, E)$] ist 4-regulär.
 - latexmath:[$||G||=10$]
 
 .4-regulärer Graph mit mind. Kantenanzahl
-["graphviz","8"]
+["graphviz"]
 ----
 digraph {
     edge [dir=none]
@@ -250,4 +251,133 @@ digraph {
 
     d -> e
 }
+----
+
+<<<
+== Graphen in Optimierungsverfahren
+
+["graphviz"]
+----
+strict graph  {
+    "Linz\nHagenberg\nWels\nGraz\nSteyr\nSalzburg\nWien\nLinz\n1080.60";
+    "Linz\nHagenberg\nWels\nSteyr\nGraz\nSalzburg\nWien\nLinz\n1091.80";
+    "Linz\nHagenberg\nWels\nSalzburg\nSteyr\nGraz\nWien\nLinz\n897.70" [color=red];
+    "Linz\nHagenberg\nWels\nSteyr\nSalzburg\nGraz\nWien\nLinz\n939.90";
+    "Linz\nHagenberg\nWels\nGraz\nSteyr\nSalzburg\nWien\nLinz\n1080.60" -- "Linz\nHagenberg\nWels\nSteyr\nGraz\nSalzburg\nWien\nLinz\n1091.80";
+    "Linz\nHagenberg\nWels\nGraz\nSteyr\nSalzburg\nWien\nLinz\n1080.60" -- "Linz\nHagenberg\nWels\nSalzburg\nSteyr\nGraz\nWien\nLinz\n897.70";
+    "Linz\nHagenberg\nWels\nSalzburg\nSteyr\nGraz\nWien\nLinz\n897.70" -- "Linz\nHagenberg\nWels\nSteyr\nSalzburg\nGraz\nWien\nLinz\n939.90";
+}
+----
+
+[source, python]
+----
+import networkx as nx
+import matplotlib.pyplot as plt
+from networkx.drawing.nx_pydot import write_dot
+import random
+from operator import attrgetter
+
+G = nx.Graph()
+G.add_weighted_edges_from([
+    ("Wien", "Linz",184.4),
+    ("Wien", "Hagenberg",180),
+    ("Wien", "Graz",200.1),
+    ("Wien", "Salzburg",295),
+    ("Linz", "Hagenberg",23),
+    ("Linz", "Graz",220.9),
+    ("Linz", "Salzburg",132.5),
+    ("Salzburg", "Steyr",134),
+    ("Salzburg", "Graz",296),
+    ("Salzburg", "Wels",108),
+    ("Graz", "Steyr",191),
+    ("Graz", "Wels",196),
+    ("Wels", "Steyr",45.2),
+    ("Wels", "Hagenberg",57.2)
+])
+
+nx.draw(G, with_labels = True)
+plt.show()
+
+def is_valid_path(G: nx.Graph, path: list):
+        edges = list(zip(path, path[1::]))
+        all_edges_valid = True
+        for u, v in edges:
+            if not G.has_edge(u, v):
+                all_edges_valid = False
+        return all_edges_valid
+
+def find_random_hamilton_circuit(G: nx.Graph, starting_node: str, max_iterations = 100):
+    is_hamilton_circuit = False
+    i = 0
+    potential_path = None
+    while not is_hamilton_circuit and i < max_iterations:
+        i += 1
+        potential_path = [node for node in G.nodes()
+                          if node != starting_node]
+
+        random.shuffle(potential_path)
+        potential_path.insert(0, starting_node)
+        potential_path.append(starting_node)
+        is_hamilton_circuit = is_valid_path(G, potential_path)
+
+        if not is_hamilton_circuit:
+            potential_path = None
+    return potential_path
+
+
+class swap2Node:
+    def __init__(self, hamilton_circuit, distance):
+        self.hamilton_circuit = hamilton_circuit
+        self.distance = distance
+
+    def __repr__(self):
+        return "\n".join(self.hamilton_circuit) + "\n" + "%.2f" % self.distance
+
+    def __eq__(self, other):
+        return hash(self) == hash(other)
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __hash__(self):
+        return hash(self.distance) + hash(" ".join(self.hamilton_circuit))
+
+def swap2(G: nx.Graph, starting_node: str):
+    get_total_weight = lambda x : sum([G[u][v]["weight"] for u, v in list(zip(x, x[1::]))])
+    hamilton_circuit = find_random_hamilton_circuit(G, starting_node)
+    if hamilton_circuit is None:
+        print("No hamilton circuit found")
+        return
+
+    distance = get_total_weight(hamilton_circuit)
+    first_solution = swap2Node(hamilton_circuit[:], distance)
+    swap2_graph = nx.Graph()
+    swap2_graph.add_node(first_solution)
+    find_another_solution = True
+    while find_another_solution:
+        calculated_solutions = []
+        len_circuit = len(first_solution.hamilton_circuit) - 2
+        for j in range(1, len_circuit):
+            for k in range(j + 1, len_circuit):
+                alt_path = first_solution.hamilton_circuit[:]
+                alt_path[j], alt_path[k] = alt_path[k], alt_path[j]
+                if is_valid_path(G, alt_path):
+                    new_node = swap2Node(alt_path[:], get_total_weight(alt_path))
+                    swap2_graph.add_edge(first_solution, new_node)
+                    calculated_solutions.append(new_node)
+
+        if len(calculated_solutions) == 0:
+            find_another_solution = False
+        min_solution = min(calculated_solutions, key=attrgetter("distance"))
+        if min_solution is not None and min_solution.distance < first_solution.distance:
+            first_solution = min_solution
+        else:
+            find_another_solution = False
+
+    nx.draw(swap2_graph, with_labels = True)
+    plt.show()
+    write_dot(swap2_graph, "./swap2_graph.dot")
+    return first_solution
+
+swap2(G, "Linz")
 ----
