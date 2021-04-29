@@ -1,0 +1,86 @@
+= Übung 04
+:author: Florian Weingartshofer
+:email: <S1910307103@students.fh-hagenberg.at>
+:reproducible:
+:experimental:
+:listing-caption: Listing
+:source-highlighter: rouge
+:imgdir: ./img
+:imagesoutdir: ./out
+:stem:
+:toc:
+:numbered:
+
+== Kürzeste Wege Dijkstra
+
+.States
+[source,python]
+----
+F= set() ; dist= {'a': 0, 'b': inf, 'c': inf, 'd': inf, 'f': inf, 'e': inf, 'g': inf} ; W= {}
+F= {'a'} ; dist= {'a': 0, 'b': 3, 'c': 1, 'd': inf, 'f': inf, 'e': inf, 'g': inf} ; W= {'b': 'a', 'c': 'a'}
+F= {'a', 'c'} ; dist= {'a': 0, 'b': 3, 'c': 1, 'd': inf, 'f': inf, 'e': 2, 'g': inf} ; W= {'b': 'a', 'c': 'a', 'e': 'c'}
+F= {'e', 'a', 'c'} ; dist= {'a': 0, 'b': 3, 'c': 1, 'd': inf, 'f': inf, 'e': 2, 'g': 19} ; W= {'b': 'a', 'c': 'a', 'e': 'c', 'g': 'e'}
+F= {'e', 'b', 'a', 'c'} ; dist= {'a': 0, 'b': 3, 'c': 1, 'd': 6, 'f': 11, 'e': 2, 'g': 19} ; W= {'b': 'a', 'c': 'a', 'e': 'c', 'g': 'e', 'd': 'b', 'f': 'b'}
+F= {'e', 'a', 'd', 'b', 'c'} ; dist= {'a': 0, 'b': 3, 'c': 1, 'd': 6, 'f': 10, 'e': 2, 'g': 19} ; W= {'b': 'a', 'c': 'a', 'e': 'c', 'g': 'e', 'd': 'b', 'f': 'd'}
+F= {'e', 'f', 'a', 'd', 'b', 'c'} ; dist= {'a': 0, 'b': 3, 'c': 1, 'd': 6, 'f': 10, 'e': 2, 'g': 15} ; W= {'b': 'a', 'c': 'a', 'e': 'c', 'g': 'f', 'd': 'b', 'f': 'd'}
+----
+
+Weg:
+a -> b -> d -> f -> g
+
+Länge: 15
+
+== Kürzeste Wege A*
+
+[source, python]
+----
+F= set() ; dist= [(0, 's')] ; W= {}
+F= {'s'} ; dist= [(45, 'b'), (45, 'c'), (51, 'a'), (55, 'd'), (58, 'f'), (65, 'e')] ; W= {'c': 's', 'b': 's', 'a': 's', 'd': 's', 'f': 's', 'e': 's'}
+F= {'s', 'b'} ; dist= [(45, 'c'), (55, 'd'), (48, 'i'), (65, 'e'), (58, 'f'), (51, 'a'), (50, 'g')] ; W= {'c': 's', 'b': 's', 'a': 's', 'd': 's', 'f': 's', 'e': 's', 'i': 'b', 'g': 'b'}
+F= {'c', 's', 'b'} ; dist= [(45, 'i'), (55, 'd'), (50, 'g'), (65, 'e'), (58, 'f'), (51, 'a')] ; W= {'c': 's', 'b': 's', 'a': 's', 'd': 's', 'f': 's', 'e': 's', 'i': 'c', 'g': 'b'}
+F= {'i', 'c', 's', 'b'} ; dist= [(48, 'h'), (55, 'd'), (50, 'g'), (65, 'e'), (58, 'f'), (51, 'z'), (51, 'a')] ; W= {'c': 's', 'b': 's', 'a': 's', 'd': 's', 'f': 's', 'e': 's', 'i': 'c', 'g': 'b', 'z': 'i', 'h': 'i'}
+F= {'s', 'i', 'h', 'c', 'b'} ; dist= [(50, 'g'), (55, 'd'), (50, 'z'), (65, 'e'), (58, 'f'), (51, 'a')] ; W= {'c': 's', 'b': 's', 'a': 's', 'd': 's', 'f': 's', 'e': 's', 'i': 'c', 'g': 'b', 'z': 'h', 'h': 'i'}
+F= {'s', 'i', 'h', 'c', 'b', 'g'} ; dist= [(50, 'z'), (55, 'd'), (51, 'a'), (65, 'e'), (58, 'f')] ; W= {'c': 's', 'b': 's', 'a': 's', 'd': 's', 'f': 's', 'e': 's', 'i': 'c', 'g': 'b', 'z': 'h', 'h': 'i'}
+----
+
+Weg:
+s -> c -> i -> h -> z
+
+Länge: 50
+
+== Kürzeste Wege Dijkstra vs A*
+
+Im Vergleich expandiert der Dijkstra Algorithmus wesentlich mehr Knoten als der A*.
+
+Weg bei beiden ident: s -> e -> c -> d -> z
+
+Länge auch wieder gleich: 8
+
+=== Dijkstra
+latexmath:[$|F|=6$]
+
+[source]
+----
+F= set() ; dist= {'a': inf, 'b': inf, 'c': inf, 'd': inf, 'f': inf, 'z': inf, 'e': inf, 's': 0} ; W= {}
+F= {'s'} ; dist= {'a': inf, 'b': inf, 'c': inf, 'd': 7, 'f': 2, 'z': inf, 'e': 3, 's': 0} ; W= {'d': 's', 'e': 's', 'f': 's'}
+F= {'s', 'f'} ; dist= {'a': 6, 'b': inf, 'c': inf, 'd': 7, 'f': 2, 'z': inf, 'e': 3, 's': 0} ; W= {'d': 's', 'e': 's', 'f': 's', 'a': 'f'}
+F= {'e', 's', 'f'} ; dist= {'a': 6, 'b': inf, 'c': 5, 'd': 7, 'f': 2, 'z': inf, 'e': 3, 's': 0} ; W= {'d': 's', 'e': 's', 'f': 's', 'a': 'f', 'c': 'e'}
+F= {'e', 'c', 's', 'f'} ; dist= {'a': 6, 'b': 15, 'c': 5, 'd': 6, 'f': 2, 'z': 9, 'e': 3, 's': 0} ; W= {'d': 'c', 'e': 's', 'f': 's', 'a': 'f', 'c': 'e', 'b': 'c', 'z': 'c'}
+F= {'s', 'e', 'c', 'a', 'f'} ; dist= {'a': 6, 'b': 9, 'c': 5, 'd': 6, 'f': 2, 'z': 9, 'e': 3, 's': 0} ; W= {'d': 'c', 'e': 's', 'f': 's', 'a': 'f', 'c': 'e', 'b': 'a', 'z': 'c'}
+F= {'s', 'd', 'e', 'c', 'a', 'f'} ; dist= {'a': 6, 'b': 9, 'c': 5, 'd': 6, 'f': 2, 'z': 8, 'e': 3, 's': 0} ; W= {'d': 'c', 'e': 's', 'f': 's', 'a': 'f', 'c': 'e', 'b': 'a', 'z': 'd'}
+----
+
+==== A*
+latexmath:[$|F|=4$]
+
+[source]
+----
+F= set() ; dist= [(0, 's')] ; W= {}
+F= {'s'} ; dist= [(8, 'e'), (9, 'd'), (9, 'f')] ; W= {'d': 's', 'e': 's', 'f': 's'}
+F= {'e', 's'} ; dist= [(8, 'c'), (9, 'f'), (9, 'd')] ; W= {'d': 's', 'e': 's', 'f': 's', 'c': 'e'}
+F= {'e', 'c', 's'} ; dist= [(8, 'd'), (9, 'f'), (11, 'a'), (21, 'b'), (9, 'z')] ; W= {'d': 'c', 'e': 's', 'f': 's', 'c': 'e', 'a': 'c', 'b': 'c', 'z': 'c'}
+F= {'e', 'c', 's', 'd'} ; dist= [(8, 'z'), (9, 'f'), (11, 'a'), (21, 'b')] ; W= {'d': 'c', 'e': 's', 'f': 's', 'c': 'e', 'a': 'd', 'b': 'c', 'z': 'd'}
+----
+
+== Kürzeste Wege doppelter Dijkstra
+Man würde für beide Wege die heuristische Funktion brauchen.
