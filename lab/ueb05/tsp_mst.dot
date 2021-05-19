@@ -1,0 +1,8 @@
+strict graph "" {
+	Wien -- Steyr	[weight=166];
+	Linz -- Hagenberg	[weight=23];
+	Hagenberg -- Steyr	[weight=43.6];
+	Graz -- Steyr	[weight=191];
+	Salzburg -- Wels	[weight=108];
+	Steyr -- Wels	[weight=45.2];
+}
