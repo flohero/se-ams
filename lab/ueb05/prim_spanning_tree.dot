@@ -1,0 +1,10 @@
+strict graph "" {
+	b -- a	[weight=2];
+	b -- c	[weight=1];
+	a -- d	[weight=1];
+	d -- e	[weight=2];
+	d -- g	[weight=5];
+	e -- f	[weight=4];
+	f -- h	[weight=3];
+	f -- i	[weight=1];
+}
