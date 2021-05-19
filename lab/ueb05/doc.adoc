@@ -90,5 +90,34 @@ Danach wieder mit einem MST Algorithmus wieder einen MST suchen,
 falls es noch einen MST gibt, hat dieser so wenig Kanten gemeinsam mit `T` wie möglich.
 
 == Die MST Heuristik für das TSP
+[graphviz]
+----
+strict graph "" {
+	Wien -- Steyr	[label=166];
+	Linz -- Hagenberg	[label=23];
+	Hagenberg -- Steyr	[label=43.6];
+	Graz -- Steyr	[label=191];
+	Salzburg -- Wels	[label=108];
+	Steyr -- Wels	[label=45.2];
+}
+----
 
+== Minimale Spannbäume in gerichteten Graphen
+Prim geht davon aus, dass alle Knoten von allen Knoten aus erreichbar sind.
+Dies ist bei einem gerichtetem Graphen nicht der Fall, daher funktioniert Prim nicht.
+
+Kruskal überprüft bei jedem Schritt, ob die Kanten einen Kreis bei dem momentanen Spannbaum bilden.
+Dies funktioniert bei einem ungerichteten Graphen, allerdings gibt es Fälle bei gerichteten Graphen, die für
+Kruskal wie ein Kreis ausschauen, es allerdings nicht sind.
+
+.Beispiel Directed Graph Kruskal
+[graphviz]
+----
+digraph "" {
+    layout=circo
+    1 -> 2
+    3 -> 1
+    3 -> 2
+}
+----
 
