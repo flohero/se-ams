@@ -389,7 +389,7 @@ A* took:  2.6726722717285155e-05  in average for a 2x2 puzzle
 A* took:  3.0303001403808592e-05  in average for a 3x3 puzzle
 ----
 
-Ein 4x4 Graph hat `16! = 87178291440` Knoten.
+Ein 4x4 Graph hat `16! = 20922789888000` Knoten.
 Der AStar hat länger als 5min gedauert.
 
 == Code
